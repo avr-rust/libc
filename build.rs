@@ -1,6 +1,8 @@
 extern crate bindgen;
 extern crate avr_mcu;
 
+use avr_mcu::current::mcu_name;
+
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::{env, fs};
@@ -26,14 +28,6 @@ const DEVICE_SPECIFIC_HEADERS: &'static [&'static str] = &[
 
 pub struct MakeResult {
     pub static_lib_dir: PathBuf,
-}
-
-fn mcu_name() -> Option<String> {
-    if cfg!(arch = "avr") {
-        Some(avr_mcu::current::mcu_name().expect("could not get mcu name"))
-    } else {
-        None
-    }
 }
 
 fn main() {
