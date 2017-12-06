@@ -36,6 +36,16 @@ fn mcu_name() -> Option<String> {
     }
 }
 
+/// Assume that if we're trying to target x86, we're probably
+/// generating docs.
+fn is_building_documentation() -> bool {
+    if cfg!(arch = "avr") {
+        false
+    } else {
+        true
+    }
+}
+
 fn main() {
     let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
     let libc_dir = manifest_dir.join("avr-libc");
@@ -47,7 +57,7 @@ fn main() {
         println!("cargo:warning=not targeting a specific microcontroller");
     }
 
-    if !static_lib_path.exists() {
+    if !static_lib_path.exists() && !is_building_documentation() {
         println!("avr-libc not yet built for '{}', building now", AVR_ARCH);
         bootstrap(&libc_dir);
         configure(&libc_dir);
