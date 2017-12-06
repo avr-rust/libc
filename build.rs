@@ -54,7 +54,7 @@ fn main() {
     let static_lib_path = arch_dir.join("libc.a");
 
     if mcu_name().is_none() {
-        println!("cargo:warning=not targeting a specific microcontroller");
+        println!("cargo:warning=not targeting a specific microcontroller, create a custom target specification to enable mcu-specific functionality");
     }
 
     if !static_lib_path.exists() && !is_building_documentation() {
