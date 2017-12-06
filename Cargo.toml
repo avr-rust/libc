@@ -5,3 +5,4 @@ authors = ["Dylan McKay <me@dylanmckay.io>"]
 
 [build-dependencies]
 bindgen = "0.31"
+avr-mcu = "0.2"
