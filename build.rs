@@ -14,12 +14,26 @@ const HEADER_BLACKLIST: &'static [&'static str] = &[
     "avr/signal.h", // Deprecated, moved to `avr/interrupt.h`
     "avr/wdt.h", // Requires MCU-specific constants
     "stdfix-avrlibc.h", // Deprecated, use 'stdfix.h' instead.
-    "util/delay.h", // relies on AVR-GCC specific optimisations
+    "util/delay.h", "util/delay_basic.h", // relies on AVR-GCC specific optimisations
     "util/setbaud.h", // mostly made of preprocessor magic
+];
+
+const DEVICE_SPECIFIC_HEADERS: &'static [&'static str] = &[
+    "avr/boot.h",
+    "avr/sleep.h",
+    "util/crc16.h",
 ];
 
 pub struct MakeResult {
     pub static_lib_dir: PathBuf,
+}
+
+fn mcu_name() -> Option<String> {
+    if cfg!(arch = "avr") {
+        Some(avr_mcu::current::mcu_name().expect("could not get mcu name"))
+    } else {
+        None
+    }
 }
 
 fn main() {
@@ -29,10 +43,9 @@ fn main() {
     let arch_dir = libc_dir.join("avr").join("lib").join(AVR_ARCH);
     let static_lib_path = arch_dir.join("libc.a");
 
-    let mcu_name = match avr_mcu::current::mcu_name() {
-        Some(name) => name,
-        None => panic!("no microcontroller name specific in target specification"),
-    };
+    if mcu_name().is_none() {
+        println!("cargo:warning=not targeting a specific microcontroller");
+    }
 
     if !static_lib_path.exists() {
         println!("avr-libc not yet built for '{}', building now", AVR_ARCH);
@@ -43,7 +56,7 @@ fn main() {
         make(&arch_dir);
     }
 
-    generate_bindings(&mcu_name, &libc_dir);
+    generate_bindings(&libc_dir);
 
     println!("cargo:rustc-link-search={}", arch_dir.display());
     println!("cargo:rustc-link-lib=static=c");
@@ -121,15 +134,24 @@ fn headers_inside(dir: &Path, libc_path: &Path) -> Vec<PathBuf> {
 }
 
 fn is_header_blacklisted(path: &Path, libc_path: &Path) -> bool {
-    let include_path = libc_path.join("include");
-
     if let Some(stem) = path.file_stem() {
         if stem.to_str().unwrap().starts_with("io") {
             return true;
         }
     }
 
-    HEADER_BLACKLIST.iter()
+    is_header_in_list(path, libc_path, HEADER_BLACKLIST) ||
+        (mcu_name().is_none() && is_header_device_specific(path, libc_path))
+}
+
+fn is_header_device_specific(path: &Path, libc_path: &Path) -> bool {
+    is_header_in_list(path, libc_path, DEVICE_SPECIFIC_HEADERS)
+}
+
+fn is_header_in_list(path: &Path, libc_path: &Path, list: &[&str]) -> bool {
+    let include_path = libc_path.join("include");
+
+    list.iter()
         .any(|header| include_path.join(header) == path)
 }
 
@@ -144,22 +166,25 @@ fn base_headers(libc_dir: &Path) -> Vec<PathBuf> {
     headers
 }
 
-fn mcu_define_name(mcu_name: &str) -> &'static str {
-    match mcu_name {
+fn mcu_define_name() -> Option<&'static str> {
+    mcu_name().map(|name| match &name[..] {
         "atmega328" => "__AVR_ATmega328__",
         "atmega328p" => "__AVR_ATmega328P__",
-        _ => panic!("unsupported mcu, please raise an avr-rust issue on GitHub to add a {} preprocessor name mapping", mcu_name),
-    }
+        _ => panic!("unsupported mcu, please raise an avr-rust issue on GitHub to add a {} preprocessor name mapping", name),
+    })
 }
 
-fn generate_bindings(mcu_name: &str, libc_dir: &Path) {
+fn generate_bindings(libc_dir: &Path) {
     // Configure and generate bindings.
     let mut builder = bindgen::builder()
         .use_core()
         .ctypes_prefix("::rust_ctypes")
         .clang_arg("-Iavr-libc/include")
-        .clang_arg("-ffreestanding")
-        .clang_arg(format!("-D{}", mcu_define_name(mcu_name)));
+        .clang_arg("-ffreestanding");
+
+    if let Some(define_name) = mcu_define_name() {
+        builder = builder.clang_arg(format!("-D{}", define_name));
+    }
 
     for header_path in base_headers(libc_dir) {
         builder = builder.header(header_path.display().to_string());
