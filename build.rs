@@ -1,13 +1,13 @@
 extern crate bindgen;
 extern crate avr_mcu;
+#[macro_use] extern crate lazy_static;
 
-use avr_mcu::current::mcu_name;
+use avr_mcu::Mcu;
 
 use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::{env, fs};
 
-const AVR_ARCH: &'static str = "avr6";
 const BINDINGS_DEST: &'static str = "src/bindings.rs";
 
 /// Headers which can't be used from Rust.
@@ -26,23 +26,30 @@ const DEVICE_SPECIFIC_HEADERS: &'static [&'static str] = &[
     "util/crc16.h",
 ];
 
-pub struct MakeResult {
-    pub static_lib_dir: PathBuf,
+lazy_static! {
+    static ref MCU: Option<Mcu> = avr_mcu::current::mcu();
+}
+
+fn architecture() -> avr_mcu::Architecture {
+    match *MCU {
+        Some(ref mcu) => mcu.architecture,
+        None => avr_mcu::Architecture::Avr2, // The bare minimum.
+    }
 }
 
 fn main() {
-    let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
-    let libc_dir = manifest_dir.join("avr-libc");
-    let include_dir = libc_dir.join("include");
-    let arch_dir = libc_dir.join("avr").join("lib").join(AVR_ARCH);
-    let static_lib_path = arch_dir.join("libc.a");
-
-    if mcu_name().is_none() {
+    if MCU.is_none() {
         println!("cargo:warning=not targeting a specific microcontroller, create a custom target specification to enable mcu-specific functionality");
     }
 
+    let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let libc_dir = manifest_dir.join("avr-libc");
+    let include_dir = libc_dir.join("include");
+    let arch_dir = libc_dir.join("avr").join("lib").join(architecture().name());
+    let static_lib_path = arch_dir.join("libc.a");
+
     if !static_lib_path.exists() {
-        println!("avr-libc not yet built for '{}', building now", AVR_ARCH);
+        println!("avr-libc not yet built for '{}', building now", architecture().name());
         bootstrap(&libc_dir);
         configure(&libc_dir);
 
@@ -90,7 +97,7 @@ fn configure(libc_dir: &Path) {
     }
 }
 
-fn make(dir: &Path) -> MakeResult {
+fn make(dir: &Path) {
     println!("Making avr-libc");
 
     let mut cmd = Command::new("make");
@@ -99,10 +106,6 @@ fn make(dir: &Path) -> MakeResult {
 
     if !cmd.status().expect("failed to compile avr-libc").success() {
         panic!("failed to make");
-    }
-
-    MakeResult {
-        static_lib_dir: Path::new(dir).to_owned(),
     }
 }
 
@@ -135,7 +138,7 @@ fn is_header_blacklisted(path: &Path, libc_path: &Path) -> bool {
     }
 
     is_header_in_list(path, libc_path, HEADER_BLACKLIST) ||
-        (mcu_name().is_none() && is_header_device_specific(path, libc_path))
+        (MCU.is_none() && is_header_device_specific(path, libc_path))
 }
 
 fn is_header_device_specific(path: &Path, libc_path: &Path) -> bool {
@@ -161,11 +164,7 @@ fn base_headers(libc_dir: &Path) -> Vec<PathBuf> {
 }
 
 fn mcu_define_name() -> Option<&'static str> {
-    mcu_name().map(|name| match &name[..] {
-        "atmega328" => "__AVR_ATmega328__",
-        "atmega328p" => "__AVR_ATmega328P__",
-        _ => panic!("unsupported mcu, please raise an avr-rust issue on GitHub to add a {} preprocessor name mapping", name),
-    })
+    MCU.as_ref().map(|mcu| mcu.c_preprocessor_name)
 }
 
 fn generate_bindings(libc_dir: &Path) {

@@ -17,3 +17,4 @@ keywords = ["avr", "libc", "arduino", "avr-gcc"]
 [build-dependencies]
 bindgen = "0.31"
 avr-mcu = "0.2"
+lazy_static = "0.2"
