@@ -3,6 +3,16 @@ name = "avr-libc"
 version = "0.1.0"
 authors = ["Dylan McKay <me@dylanmckay.io>"]
 
+description = """
+Rust bindings to avr-libc.
+"""
+
+license = "MIT"
+# readme = "README.md"
+repository = "https://github.com/avr-rust/libc"
+
+keywords = ["avr", "libc", "arduino", "avr-gcc"]
+
 [build-dependencies]
 bindgen = "0.31"
 avr-mcu = "0.2"
