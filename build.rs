@@ -14,7 +14,8 @@ const BINDINGS_DEST: &'static str = "src/bindings.rs";
 const HEADER_BLACKLIST: &'static [&'static str] = &[
     "avr/crc16.h", "avr/parity.h", "avr/delay.h", // Deprecated, moved to 'util'
     "avr/signal.h", // Deprecated, moved to `avr/interrupt.h`
-    "avr/wdt.h", // Requires MCU-specific constants
+    "avr/wdt.h", // Uses inline assembly constraint I, gives out of range errors because
+                 // bindgen does not use an AVR assembler..
     "stdfix-avrlibc.h", // Deprecated, use 'stdfix.h' instead.
     "util/delay.h", "util/delay_basic.h", // relies on AVR-GCC specific optimisations
     "util/setbaud.h", // mostly made of preprocessor magic
