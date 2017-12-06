@@ -8,9 +8,9 @@ Rust bindings to avr-libc.
 """
 
 license = "MIT"
-# readme = "README.md"
+readme = "README.md"
 repository = "https://github.com/avr-rust/libc"
-documentation = "https://docs.rs/avr-libc"
+documentation = "https://avr-rust.github.io/libc/avr_libc/"
 
 keywords = ["avr", "libc", "arduino", "avr-gcc"]
 

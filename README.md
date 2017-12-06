@@ -5,5 +5,5 @@
 
 Bindings to avr-libc.
 
-[Documentation](http://docs.rs/avr-libc)
+[Documentation](https://avr-rust.github.io/libc/avr_libc/)
 
