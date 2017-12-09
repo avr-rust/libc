@@ -89,6 +89,9 @@ fn configure(libc_dir: &Path) {
     cmd.arg("--host=avr");
 
     cmd.env("CC", "avr-gcc");
+    if let Some(mcu) = MCU.as_ref() {
+        cmd.env("CFLAGS", format!("-mmcu={}", mcu.device.name.to_lowercase()));
+    }
 
     cmd.current_dir(libc_dir);
     println!("{:?}", cmd);
