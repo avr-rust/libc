@@ -10,7 +10,7 @@ pub type c_uchar = u8;
 #[allow(dead_code)] pub type c_ushort = u16;
 pub type c_uint = u16;
 pub type c_ulong = u32;
-pub type c_ulonglong = u64;
+#[allow(dead_code)] pub type c_ulonglong = u64;
 
 // Not C compliant.
 #[allow(dead_code)]
