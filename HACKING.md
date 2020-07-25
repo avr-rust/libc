@@ -1,9 +1,15 @@
 # Tips on working with this project
 
-Install Xargo
+Install nightly Rust
+
+Building directly:
+
+```rust
+cargo build --target avr-atmega328p.json -Z build-std=core
+```
 
 # Generate documentation
 
 ```bash
-xargo doc --target avr-atmega328
+cargo doc --target avr-atmega328
 ```
