@@ -81,7 +81,7 @@ fn bootstrap(libc_dir: &Path) {
 fn configure(libc_dir: &Path) {
     println!("Configuring avr-libc");
 
-    let host = env::var("HOST").unwrap();;
+    let host = env::var("HOST").unwrap();
 
     let mut cmd = Command::new("sh");
     cmd.arg("configure");
@@ -168,7 +168,7 @@ fn base_headers(libc_dir: &Path) -> Vec<PathBuf> {
 }
 
 fn mcu_define_name() -> Option<&'static str> {
-    MCU.as_ref().map(|mcu| mcu.c_preprocessor_name)
+    MCU.as_ref().map(|mcu| &mcu.c_preprocessor_name[..])
 }
 
 fn generate_bindings(libc_dir: &Path) {
