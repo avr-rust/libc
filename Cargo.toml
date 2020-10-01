@@ -15,6 +15,6 @@ documentation = "https://avr-rust.github.io/libc/avr_libc/"
 keywords = ["avr", "libc", "arduino", "avr-gcc"]
 
 [build-dependencies]
-bindgen = "0.54"
+bindgen = "0.55"
 avr-mcu = "0.3"
 lazy_static = "1.4"
