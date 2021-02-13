@@ -30,7 +30,7 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   POSSIBILITY OF SUCH DAMAGE. */
 
-/* $Id: eeprom.h 2468 2015-02-25 12:53:38Z pitchumani $ */
+/* $Id: eeprom.h 2548 2018-06-29 06:38:56Z pitchumani $ */
 
 #ifndef _AVR_EEPROM_H_
 #define _AVR_EEPROM_H_ 1
@@ -112,8 +112,10 @@ extern "C" {
  */
 #if	defined (__DOXYGEN__)
 # define eeprom_is_ready()
-#elif	defined (__AVR_XMEGA__) && __AVR_XMEGA__
+#elif	defined (NVM_STATUS)
 # define eeprom_is_ready()	bit_is_clear (NVM_STATUS, NVM_NVMBUSY_bp)
+#elif	defined (NVMCTRL_STATUS)
+# define eeprom_is_ready()	bit_is_clear (NVMCTRL_STATUS, NVMCTRL_EEBUSY_bp)
 #elif	defined (DEECR)
 # define eeprom_is_ready()	bit_is_clear (DEECR, BSY)
 #elif	defined (EEPE)

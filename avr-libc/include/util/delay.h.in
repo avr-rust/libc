@@ -30,7 +30,7 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   POSSIBILITY OF SUCH DAMAGE. */
 
-/* $Id: delay.h.in 2506 2016-02-08 10:05:45Z joerg_wunsch $ */
+/* $Id: delay.h.in 2551 2020-10-10 20:33:35Z joerg_wunsch $ */
 
 #ifndef _UTIL_DELAY_H_
 #define _UTIL_DELAY_H_ 1
@@ -285,6 +285,7 @@ _delay_us(double __us)
 	else if (__tmp2 > 65535)
 	{
 		_delay_ms(__us / 1000.0);
+		return;
 	}
 	else if (__tmp > 255)
 	{
