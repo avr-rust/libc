@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["avr_libc"] = [{"text":"impl Clone for div_t","synthetic":false,"types":[]},{"text":"impl Clone for ldiv_t","synthetic":false,"types":[]},{"text":"impl Clone for tm","synthetic":false,"types":[]},{"text":"impl Clone for week_date","synthetic":false,"types":[]},{"text":"impl Clone for lconv","synthetic":false,"types":[]},{"text":"impl Clone for __file","synthetic":false,"types":[]},{"text":"impl Clone for max_align_t","synthetic":false,"types":[]},{"text":"impl Clone for _jmp_buf","synthetic":false,"types":[]},{"text":"impl Clone for __fuse_t","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

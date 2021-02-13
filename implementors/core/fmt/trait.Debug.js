@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["avr_libc"] = [{"text":"impl Debug for div_t","synthetic":false,"types":[]},{"text":"impl Debug for ldiv_t","synthetic":false,"types":[]},{"text":"impl Debug for tm","synthetic":false,"types":[]},{"text":"impl Debug for week_date","synthetic":false,"types":[]},{"text":"impl Debug for lconv","synthetic":false,"types":[]},{"text":"impl Debug for __file","synthetic":false,"types":[]},{"text":"impl Debug for max_align_t","synthetic":false,"types":[]},{"text":"impl Debug for _jmp_buf","synthetic":false,"types":[]},{"text":"impl Debug for __fuse_t","synthetic":false,"types":[]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

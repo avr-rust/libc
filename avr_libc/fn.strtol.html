@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `strtol` fn in crate `avr_libc`."><meta name="keywords" content="rust, rustlang, rust-lang, strtol"><title>avr_libc::strtol - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../ayu.css" disabled ><script id="default-settings"></script><script src="../storage.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="alternate icon" type="image/png" href="../favicon-16x16.png">
+<link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../down-arrow.svg");}</style></head><body class="rustdoc fn"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../avr_libc/index.html'><div class='logo-container rust-logo'><img src='../rust-logo.png' alt='logo'></div></a><div class="sidebar-elems"><p class="location"><a href="index.html">avr_libc</a></p><script>window.sidebarCurrent = {name: "strtol", ty: "fn", relpath: ""};</script><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+                <a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class="fqn"><span class="out-of-band"><span id="render-detail"><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span><a class="srclink" href="../src/avr_libc/bindings.rs.html#1248-1252" title="goto source code">[src]</a></span><span class="in-band">Function <a href="index.html">avr_libc</a>::<wbr><a class="fn" href="">strtol</a></span></h1><pre class="rust fn">pub unsafe extern &quot;C&quot; fn strtol(<br>&nbsp;&nbsp;&nbsp;&nbsp;__nptr: *const i8, <br>&nbsp;&nbsp;&nbsp;&nbsp;__endptr: *mut *mut i8, <br>&nbsp;&nbsp;&nbsp;&nbsp;__base: i16<br>) -&gt; i32</pre><div class="docblock"><p>The strtol() function converts the string in \c nptr to a long
+value.  The conversion is done according to the given base, which
+must be between 2 and 36 inclusive, or be the special value 0.</p>
+<p>The string may begin with an arbitrary amount of white space (as
+determined by isspace()) followed by a single optional \c '+' or \c '-'
+sign.  If \c base is zero or 16, the string may then include a
+\c &quot;0x&quot; prefix, and the number will be read in base 16; otherwise,
+a zero base is taken as 10 (decimal) unless the next character is
+\c '0', in which case it is taken as 8 (octal).</p>
+<p>The remainder of the string is converted to a long value in the
+obvious manner, stopping at the first character which is not a
+valid digit in the given base.  (In bases above 10, the letter \c 'A'
+in either upper or lower case represents 10, \c 'B' represents 11,
+and so forth, with \c 'Z' representing 35.)</p>
+<p>If \c endptr is not NULL, strtol() stores the address of the first
+invalid character in \c *endptr.  If there were no digits at all,
+however, strtol() stores the original value of \c nptr in \c
+endptr.  (Thus, if \c *nptr is not \c '\0' but \c **endptr is \c '\0'
+on return, the entire string was valid.)</p>
+<p>The strtol() function returns the result of the conversion, unless
+the value would underflow or overflow.  If no conversion could be
+performed, 0 is returned.  If an overflow or underflow occurs, \c
+errno is set to \ref avr_errno &quot;ERANGE&quot; and the function return value
+is clamped to \c LONG_MIN or \c LONG_MAX, respectively.</p>
+</div></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "avr_libc";</script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>
